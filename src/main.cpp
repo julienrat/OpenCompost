@@ -84,6 +84,9 @@ void setup() {
 
   // Initialiser NeoPixel
   FastLED.addLeds<WS2812, NEOPIXEL_PIN, GRB>(pixels, NUMPIXELS);
+  pixels[0] = CRGB::Yellow;
+  FastLED.show();
+  delay(1000);
   pixels[0] = CRGB::Black;
   FastLED.show();
 
