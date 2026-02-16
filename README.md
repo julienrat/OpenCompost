@@ -7,6 +7,7 @@ Emulateur I2C du capteur **MCP9808** basé sur un **DS18B20**. Le microcontrôle
 - La valeur est convertie au format MCP9808 (0.0625°C par LSB).
 - Un master I2C peut lire la température via le registre `0x05`.
 - LED NeoPixel utilisée comme indicateur d’état.
+- Projet prévu pour s’intégrer à **Meshtastic**.
 
 ## Matériel
 - Carte RP2040 (Pico / RP2040 Zero compatible)
@@ -26,13 +27,13 @@ Emulateur I2C du capteur **MCP9808** basé sur un **DS18B20**. Le microcontrôle
 
 ## Illustrations
 ### Schéma
-![Schéma I2C emulator](PCB/Schematic_I2C_emulator_2026-02-16.png)
+<img src="PCB/Schematic_I2C_emulator_2026-02-16.png" alt="Schéma I2C emulator" width="900">
 
 ### PCB 2D
-![PCB I2C emulator](PCB/PCB_PCB_I2C_emulator_2026-02-16.png)
+<img src="PCB/PCB_PCB_I2C_emulator_2026-02-16.png" alt="PCB I2C emulator" width="300">
 
 ### PCB 3D
-![Vue 3D du circuit](PCB/Sélection_025.png)
+<img src="PCB/Sélection_025.png" alt="Vue 3D du circuit" width="500">
 
 ## Dépendances (PlatformIO)
 Déjà déclarées dans `platformio.ini` :
@@ -51,8 +52,8 @@ lib_deps =
 Le code renvoie un registre 16 bits (MSB puis LSB) comme un MCP9808.
 
 ## LED NeoPixel (GPIO16)
-- **Violet** : mesure DS18B20 en cours (toutes les 2 minutes)
-- **Vert** : lecture I2C du registre température (pulse 500 ms)
+- **Violet** : mesure DS18B20 en cours (toutes les 2 minutes, 1 s)
+- **Vert** : lecture I2C du registre température (pulse 1 s)
 - **Rouge clignotant** : erreur de lecture DS18B20 (500 ms on/off)
 - **Éteinte** : pas d’activité
 
