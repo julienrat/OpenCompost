@@ -68,3 +68,4 @@ Le code renvoie un registre 16 bits (MSB puis LSB) comme un MCP9808.
 ## Structure du projet
 - Code principal : `src/main.cpp`
 - Configuration PlatformIO : `platformio.ini`
+# DS18B20_TO_BMP280_EMULATOR
