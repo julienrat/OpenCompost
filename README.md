@@ -1,11 +1,11 @@
-# I2C_DS18B20_to_MCP9808
+# DS18B20_TO_BMP280_EMULATOR
 
-Emulateur I2C du capteur **MCP9808** basé sur un **DS18B20**. Le microcontrôleur (RP2040) expose un périphérique I2C à l’adresse `0x18` et fournit la température via le registre `0x05` comme un MCP9808.
+Émulateur I2C du capteur **BMP280** basé sur un **DS18B20**. Le microcontrôleur (RP2040) expose un périphérique I2C à l'adresse `0x76` et fournit la température via les registres BMP280 (0xFA, 0xFB, 0xFC) comme un BMP280.
 
 ## Aperçu
-- Le DS18B20 est lu **toutes les 2 minutes**.
-- La valeur est convertie au format MCP9808 (0.0625°C par LSB).
-- Un master I2C peut lire la température via le registre `0x05`.
+- Le DS18B20 est lu **toutes les 5 secondes**.
+- La valeur est convertie au format BMP280 (température compensée sur 20 bits).
+- Un master I2C peut lire la température via les registres `0xFA`, `0xFB`, `0xFC`.
 - LED NeoPixel utilisée comme indicateur d’état.
 - Projet prévu pour s’intégrer à **Meshtastic**.
 
@@ -23,7 +23,9 @@ Emulateur I2C du capteur **MCP9808** basé sur un **DS18B20**. Le microcontrôle
 - NeoPixel DIN -> `GPIO16`
 - NeoPixel VCC -> `3.3V` (ou 5V si votre LED l’exige, **avec niveau logique adapté**)
 - NeoPixel GND -> `GND`
-- I2C SDA/SCL selon la carte et votre câblage (le périphérique répond à `0x18`)
+- I2C SDA -> `GPIO0`
+- I2C SCL -> `GPIO1`
+- Le périphérique répond à l'adresse `0x76`
 
 ## Illustrations
 ### Schéma
@@ -44,22 +46,22 @@ lib_deps =
     FastLED
 ```
 
-## Fonctionnement I2C (émulation MCP9808)
-- Adresse I2C : `0x18`
-- Registre température ambiante : `0x05`
-- Format registre `0x05` : 12 bits de température, 0.0625°C/LSB
+## Fonctionnement I2C (émulation BMP280)
+- Adresse I2C : `0x76`
+- Registres température : `0xFA` (MSB), `0xFB` (LSB), `0xFC` (XLSB)
+- Format : 20 bits de température compensée, 0.002°C/LSB
 
-Le code renvoie un registre 16 bits (MSB puis LSB) comme un MCP9808.
+Le code renvoie trois octets (MSB, LSB, XLSB) comme un BMP280.
 
 ## LED NeoPixel (GPIO16)
-- **Violet** : mesure DS18B20 en cours (toutes les 2 minutes, 1 s)
-- **Vert** : lecture I2C du registre température (pulse 1 s)
-- **Rouge clignotant** : erreur de lecture DS18B20 (500 ms on/off)
+- **Violet** : mesure DS18B20 en cours (500 ms)
+- **Vert** : lecture I2C du registre température (pulse 10 ms)
+- **Rouge** : erreur de lecture DS18B20 (continu)
 - **Éteinte** : pas d’activité
 
 ## Notes importantes
-- La mesure DS18B20 est **indépendante** des requêtes I2C et se fait toutes les 2 minutes.
-- Lorsqu’un master lit `0x05`, la valeur renvoyée est la **dernière mesure disponible**.
+- La mesure DS18B20 est **indépendante** des requêtes I2C et se fait toutes les 5 secondes.
+- Lorsqu'un master lit les registres `0xFA-0xFC`, la valeur renvoyée est la **dernière mesure disponible**.
 
 ## Dépannage
 - Si la LED clignote rouge : vérifier câblage DS18B20 et la résistance de pull-up.
@@ -68,4 +70,3 @@ Le code renvoie un registre 16 bits (MSB puis LSB) comme un MCP9808.
 ## Structure du projet
 - Code principal : `src/main.cpp`
 - Configuration PlatformIO : `platformio.ini`
-# DS18B20_TO_BMP280_EMULATOR
